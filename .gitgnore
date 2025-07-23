@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Database
+citations.db
+
+# Uploads
+uploads/
+
+# Environment
+.env
+*.env
+
+# Misc
+.DS_Store
