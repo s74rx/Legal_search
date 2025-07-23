@@ -103,7 +103,7 @@ def get_info_from_gemini(text):
         print(f"Raw Gemini response: {raw_response[:200]}...")  # Show first 200 chars
         # Clean the response more thoroughly
         json_text = raw_response
-        if json_text.startswith('```
+        if json_text.startswith('```'):
             json_text = json_text[7:]
         if json_text.endswith('```'):
             json_text = json_text[:-3]
