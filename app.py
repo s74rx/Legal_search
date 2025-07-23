@@ -48,12 +48,12 @@ if not gemini_api_key:
     print("WARNING: GEMINI_API_KEY not set!")
     if os.environ.get('RENDER'):
         exit(1)  # Exit in production if API key missing
-    else:
-        try:
-            genai.configure(api_key=gemini_api_key)
-            print("Gemini API configured successfully")
-        except Exception as e:
-            print(f"Error configuring Gemini API: {e}")
+else:
+    try:
+        genai.configure(api_key=gemini_api_key)
+        print("Gemini API configured successfully")
+    except Exception as e:
+        print(f"Error configuring Gemini API: {e}")
 
 # --- Helper Functions ---
 def extract_text_from_pdf(pdf_path):
