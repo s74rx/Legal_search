@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results for "{{ query }}"{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+    <h1 class="text-2xl md:text-3xl font-bold page-title mb-4 md:mb-0">Search Results</h1>
+    <span class="text-lg text-gray-500 dark:text-gray-400">Found {{ citations|length }} results for <strong class="font-semibold text-gray-800 dark:text-gray-200">"{{ query }}"</strong></span>
+</div>
+
+{% if citations %}
+<div class="space-y-6">
+    {% for citation in citations %}
+    <div class="border rounded-lg shadow-sm p-6 view-bg table-border">
+        <div class="flex justify-between items-start">
+            <div>
+                <h2 class="text-xl font-bold mb-2">
+                    <a href="{{ url_for('view_citation', citation_id=citation.id) }}" class="link">{{ citation.parties }}</a>
+                </h2>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    {{ citation.court }} | {{ citation.journal }} | {{ citation.date_of_judgement.strftime('%d-%b-%Y') }}
+                </p>
+            </div>
+            
+        </div>
+
+        <div class="mt-4">
+            <p class="text-gray-700 dark:text-gray-300">
+                {{ citation.description|truncate(300) }}
+            </p>
+        </div>
+
+        {% if citation.keywords %}
+        <div class="mt-4">
+            {% for tag in citation.keywords.split(',') %}
+            <span class="inline-block bg-indigo-100 text-indigo-800 text-xs font-medium mr-2 mb-2 px-2.5 py-1 rounded-full dark:bg-indigo-900 dark:text-indigo-300">
+                {{ tag.strip() }}
+            </span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-12">
+    <h2 class="text-2xl font-semibold mb-2">No citations found for "{{ query }}".</h2>
+    <p class="text-gray-600 dark:text-gray-400">Try searching for something else.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Citation{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="p-4 mb-4 text-sm rounded-lg {% if category == 'error' %} bg-red-100 text-red-700 {% else %} bg-green-100 text-green-700 {% endif %}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Section 1: AI Extraction -->
+    <div class="bg-white shadow-md rounded-lg p-6 md:p-8 mb-10 form-bg">
+        <h2 class="text-2xl font-bold mb-4 page-title">Automate with AI</h2>
+        <p class="mb-4 form-label">Upload a PDF of the case document. The AI will read the headnotes to fill the form for you.</p>
+        <form method="POST" action="{{ url_for('extract_and_fill') }}" enctype="multipart/form-data">
+            <div class="flex flex-col sm:flex-row items-center">
+                <input class="block w-full text-base md:text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none form-input mb-4 sm:mb-0" id="pdf_for_extraction" name="pdf_for_extraction" type="file" required>
+                <button type="submit" class="ml-0 sm:ml-4 w-full sm:w-auto bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-3 px-6 rounded-lg text-lg">
+                    Extract Info
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Section 2: Manual Entry Form -->
+    <h1 class="text-3xl md:text-4xl font-bold mb-8 page-title">Add New Citation</h1>
+    <form method="POST" action="{{ url_for('add_citation') }}" class="bg-white shadow-xl rounded-lg px-6 md:px-10 py-8 form-bg">
+        <!-- Hidden field to store the path of the uploaded PDF -->
+        {% if pdf_filename %}
+            <input type="hidden" name="pdf_path" value="{{ pdf_filename }}">
+        {% endif %}
+
+        <div class="mb-6">
+            <label class="block text-lg font-bold mb-2 form-label" for="journal">Journal</label>
+            <input class="shadow-sm appearance-none border rounded w-full py-3 px-4 text-lg leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 form-input" id="journal" name="journal" type="text" value="{{ data.journal or '' }}" required>
+        </div>
+        <div class="mb-6">
+            <label class="block text-lg font-bold mb-2 form-label" for="parties">Parties</label>
+            <input class="shadow-sm appearance-none border rounded w-full py-3 px-4 text-lg leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 form-input" id="parties" name="parties" type="text" value="{{ data.parties or '' }}" required>
+        </div>
+        <div class="mb-6">
+            <label class="block text-lg font-bold mb-2 form-label" for="court">Court</label>
+            <input class="shadow-sm appearance-none border rounded w-full py-3 px-4 text-lg leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 form-input" id="court" name="court" type="text" value="{{ data.court or '' }}" required>
+        </div>
+        <div class="mb-6">
+            <label class="block text-lg font-bold mb-2 form-label" for="date_of_judgement">Date of Judgement</label>
+            <input class="shadow-sm appearance-none border rounded w-full py-3 px-4 text-lg leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 form-input" id="date_of_judgement" name="date_of_judgement" type="date" value="{{ data.date_of_judgement or '' }}" required>
+        </div>
+        <div class="mb-6">
+            <label class="block text-lg font-bold mb-2 form-label" for="sections">Sections</label>
+            <textarea class="shadow-sm appearance-none border rounded w-full py-3 px-4 text-lg leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 form-input" id="sections" name="sections">{{ data.sections or '' }}</textarea>
+        </div>
+        <div class="mb-6">
+            <label class="block text-lg font-bold mb-2 form-label" for="description">Description</label>
+            <textarea class="shadow-sm appearance-none border rounded w-full py-3 px-4 text-lg leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 form-input" id="description" name="description" rows="5" required>{{ data.description or '' }}</textarea>
+        </div>
+        <div class="mb-6">
+            <label class="block text-lg font-bold mb-2 form-label" for="keywords">Keywords</label>
+            <input class="shadow-sm appearance-none border rounded w-full py-3 px-4 text-lg leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 form-input" id="keywords" name="keywords" type="text" value="{{ data.keywords or '' }}" placeholder="e.g., criminal, appeal, evidence">
+        </div>
+        
+        <div class="flex items-center justify-end">
+            <button class="w-full sm:w-auto bg-blue-600 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg text-lg focus:outline-none focus:shadow-outline" type="submit">
+                Save Citation
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('[role="alert"]');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                alert.style.display = 'none';
+            }, 2000); // 2000 milliseconds = 2 seconds
+        });
+    });
+</script>
+{% endblock %}
